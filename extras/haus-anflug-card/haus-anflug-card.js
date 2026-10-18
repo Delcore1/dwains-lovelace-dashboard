@@ -20,7 +20,8 @@
  *
  * Weitere Angaben (optional): lat, lon, zoom (Endzoom, Standard 19.6), dauer (Sekunden, Standard 11), height, kacheln (Kachel-URL mit {z} {x} {y}).
  */
-const HAC_VERSION = '1.0.0';
+const HAC_VERSION = '1.0.1';
+// 1.0.1 (18.10.2026): Flug auch bei "Bewegung reduzieren" (Android: Animationen entfernen) – vorher startete die Karte gleich auf dem Haus.
 const TILE_URL = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 const Z0 = 1.3;            // Start: ganze Erdkugel
 const GLOBUS_BIS = 6.2;    // ab hier flache Karte statt Kugel (unter der Wolkendecke)
@@ -229,7 +230,6 @@ class HausAnflugCard extends HTMLElement {
       try { schon = sessionStorage.getItem('haus-anflug-gesehen') === '1'; sessionStorage.setItem('haus-anflug-gesehen', '1'); } catch (_) { /* egal */ }
       if (schon) { this._finish(true); return; }
     }
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { this._t = this._dur(); }
     // Hauskoordinaten in Weltkoordinaten (0..1, Web-Mercator)
     const s = Math.sin(this._lat * Math.PI / 180);
     this._hx = this._lon / 360 + 0.5; this._hy = 0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI);
